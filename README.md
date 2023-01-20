@@ -1,12 +1,11 @@
 # Discord-Webhook-Message-sender
 This is a program made in python
-INSTRUCTIONS
 
-go to command promt.
-Run the following command : "pip install requests"
-after install go to command promt type :
-"python WebhookMessageSender.py"
-and you are all set
+**INSTRUCTIONS**
+
+Go to Command Prompt & Type "pip install requests"
+then go to WebhookMessageSender.py and open it with python
+you are all set just dont close the command promt windows once the gui appears
 
 
 
