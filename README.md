@@ -5,7 +5,7 @@ This is a program made in python
 
 Go to Command Prompt & Type "pip install requests"
 then go to WebhookMessageSender.py and open it with python
-you are all set just dont close the command promt windows once the gui appears
+you are all set just dont close the command prompt windows once the gui appears
 
 
 
