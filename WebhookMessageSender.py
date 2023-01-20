@@ -5,8 +5,8 @@ def send_message():
     message = message_input.get()
     webhook_url = webhook_url_input.get()
     requests.post(webhook_url, json={"content": message})
-    message_input.delete(0, END)
-    webhook_url_input.delete(0, END)
+    #message_input.delete(0, END)
+    #webhook_url_input.delete(0, END)
 
 root = Tk()
 root.title("Discord Webhook Sender")
