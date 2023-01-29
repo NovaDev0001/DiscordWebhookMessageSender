@@ -1,45 +1,41 @@
-import requests
-from tkinter import *
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton
 
-def send_message():
-    message = message_input.get()
-    webhook_url = webhook_url_input.get()
-    requests.post(webhook_url, json={"content": message})
-    #message_input.delete(0, END)
-    #webhook_url_input.delete(0, END)
+class MyApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
 
-def start_animation():
-    global animation_count
-    if animation_count < 20:
-        root.geometry("{}x{}".format(animation_count*20, animation_count*10))
-        animation_count += 1
-        root.after(20, start_animation)
-    else:
-        root.geometry("400x200")
+    def initUI(self):
+        self.webhook_url_label = QLabel("Webhook URL:", self)
+        self.webhook_url_label.move(20, 20)
 
-root = Tk()
-root.title("Discord Webhook Sender")
-root.geometry("1x1")
+        self.webhook_url_input = QLineEdit(self)
+        self.webhook_url_input.move(20, 50)
+        self.webhook_url_input.resize(280, 30)
 
-animation_count = 1
-root.after(20, start_animation)
+        self.message_label = QLabel("Message:", self)
+        self.message_label.move(20, 90)
 
-#Change the font and font size for the labels
-webhook_url_label = Label(root, text="Webhook URL:", font=("Arial", 14), bg="white", fg="black")
-webhook_url_label.pack()
+        self.message_input = QLineEdit(self)
+        self.message_input.move(20, 120)
+        self.message_input.resize(280, 30)
 
-message_label = Label(root, text="Message:", font=("Arial", 14), bg="white", fg="black")
-message_label.pack()
+        self.send_button = QPushButton("Send", self)
+        self.send_button.move(20, 160)
+        self.send_button.clicked.connect(self.send_message)
 
-#Change the font and font size for the input fields
-webhook_url_input = Entry(root, font=("Arial", 14))
-webhook_url_input.pack()
+        self.setGeometry(300, 300, 350, 250)
+        self.setWindowTitle("Streaming Movie App")
+        self.show()
 
-message_input = Entry(root, font=("Arial", 14))
-message_input.pack()
+    def send_message(self):
+        webhook_url = self.webhook_url_input.text()
+        message = self.message_input.text()
+        # use requests library to send the message to the webhook URL
+        requests.post(webhook_url, json={"content": message})
 
-#Change the background and foreground color for the button
-send_button = Button(root, text="Send", command=send_message, bg = "blue", fg = "white")
-send_button.pack()
-
-root.mainloop()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = MyApp()
+    sys.exit(app.exec_())
