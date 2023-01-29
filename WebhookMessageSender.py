@@ -1,41 +1,83 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton
+import requests
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QTextEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QFileDialog, QPushButton, QLabel
+from PyQt5.QtGui import QPixmap
 
-class MyApp(QWidget):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
-        self.webhook_url_label = QLabel("Webhook URL:", self)
-        self.webhook_url_label.move(20, 20)
+        # Create the layout
+        layout = QVBoxLayout()
+        h_layout = QHBoxLayout()
 
-        self.webhook_url_input = QLineEdit(self)
-        self.webhook_url_input.move(20, 50)
-        self.webhook_url_input.resize(280, 30)
+        # Create the widgets
+        webhook_label = QLabel("Enter Webhook Url:")
+        self.webhook_input = QLineEdit()
+        message_label = QLabel("Enter Message:")
+        self.message_input = QTextEdit()
+        send_button = QPushButton("Send")
+        send_button.clicked.connect(self.send_webhook)
+        self.image_label = QLabel()
+        self.image_label.setPixmap(QPixmap('discord_icon.png'))
+        self.image_button = QPushButton("Add Image")
+        self.image_button.clicked.connect(self.open_file_dialog)
 
-        self.message_label = QLabel("Message:", self)
-        self.message_label.move(20, 90)
+        # Add the widgets to the layout
+        layout.addWidget(webhook_label)
+        layout.addWidget(self.webhook_input)
+        layout.addWidget(message_label)
+        layout.addWidget(self.message_input)
+        h_layout.addWidget(self.image_label)
+        h_layout.addWidget(self.image_button)
+        layout.addLayout(h_layout)
+        layout.addWidget(send_button)
 
-        self.message_input = QLineEdit(self)
-        self.message_input.move(20, 120)
-        self.message_input.resize(280, 30)
+        # Create the central widget and set its layout
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
 
-        self.send_button = QPushButton("Send", self)
-        self.send_button.move(20, 160)
-        self.send_button.clicked.connect(self.send_message)
+        # Set the window title
+        self.setWindowTitle("Webhook Sender")
 
-        self.setGeometry(300, 300, 350, 250)
-        self.setWindowTitle("Streaming Movie App")
-        self.show()
+    def send_webhook(self):
+        webhook_url = self.webhook_input.text()
+        message = self.message_input.toPlainText()
+        
 
-    def send_message(self):
-        webhook_url = self.webhook_url_input.text()
-        message = self.message_input.text()
-        # use requests library to send the message to the webhook URL
-        requests.post(webhook_url, json={"content": message})
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = MyApp()
-    sys.exit(app.exec_())
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        # Send the webhook request with the message and image (if specified)
+        files = {}
+        if hasattr(self, 'image_path'):
+            files = {'image': open(self.image_path, 'rb')}
+        requests.post(webhook_url, data={'content': message}, files=files)
+
+    def open_file_dialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        file_name, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "Images (*.png *.xpm *.jpg *.bmp *.gif);;All Files (*)", options=options)
+        if file_name:
+            self.image_path = file_name
+            self.image_label.setPixmap(QPixmap(file_name))
+
+app = QApplication(sys.argv)
+window =MainWindow()
+window.show()
+sys.exit(app.exec_())
